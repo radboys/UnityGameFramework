@@ -2,24 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using DG.Tweening;
 
 public class LockerController : MonoBehaviour
 {
+    [SerializeField] private AudioSource kadaSound; // Serialized for editor access, private to restrict external access
+
     private Vector3[] locker;
+
+    private const float LeftLimit = -20;
+    private const float RightLimit = 20;
+
+    [SerializeField] private int length;
+    [SerializeField] private int kadaIndex;
+    [SerializeField] private int currentIndex;
+
+    public Animator animator;
+
+    public Light light;
     // Start is called before the first frame update
-    public AudioSource kadaSound;
-
-    private float leftLimit = -20;
-    private float rightLimit = 20;
-
-    public int length;
-    public int kadaIndex;
-
-    private int currentIndex;
     void Start()
     {
         locker = GenerateVector3Array(length);
-        currentIndex = length / 2;
+        UpdateSoundPosition();
     }
 
     // Update is called once per frame
@@ -28,14 +33,17 @@ public class LockerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             MoveArrayLeft();
+            ShiningDistance();
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
             MoveArrayRight();
+            ShiningDistance();
         }
     }
 
-    public Vector3[] GenerateVector3Array(int length)
+    // Generates an array of Vector3s evenly spaced along a line
+    private Vector3[] GenerateVector3Array(int length)
     {
         if (length < 3)
         {
@@ -54,35 +62,43 @@ public class LockerController : MonoBehaviour
             vectorArray[i] = vectorArray[0] + interval * i * Vector3.Normalize(vectorArray[length - 1] - vectorArray[0]);
         }
 
-        foreach(var item in vectorArray)
-        {
-            //print(item);
-        }
-
         return vectorArray;
     }
 
+    // Move the array left and update sound position
     private void MoveArrayLeft()
     {
         if (currentIndex < locker.Length - 1)
         {
             currentIndex++;
+           
         }
-        kadaSound.transform.position = UpdateArrayPositions(locker)[kadaIndex];
-        kadaSound.Play();
+         UpdateSoundPosition();
     }
 
+    // Move the array right and update sound position
     private void MoveArrayRight()
     {
         if (currentIndex > 0)
         {
             currentIndex--;
+            
         }
-        UpdateArrayPositions(locker);
-        kadaSound.transform.position = UpdateArrayPositions(locker)[kadaIndex];
-        kadaSound.Play();
+        UpdateSoundPosition();
     }
 
+    // Updates the array positions and plays the sound
+    private void UpdateSoundPosition()
+    {
+        Vector3[] updatedPositions = UpdateArrayPositions(locker);
+        if (updatedPositions != null)
+        {
+            kadaSound.transform.position = updatedPositions[kadaIndex];
+            kadaSound.Play();
+        }
+    }
+
+    // Recalculates positions of the array elements based on the current index
     private Vector3[] UpdateArrayPositions(Vector3[] originalArray)
     {
         if (originalArray == null || originalArray.Length < 3 || currentIndex < 0 || currentIndex >= originalArray.Length)
@@ -92,25 +108,20 @@ public class LockerController : MonoBehaviour
         }
 
         Vector3[] recalculatedArray = new Vector3[originalArray.Length];
-        Vector3 centerPosition = originalArray[currentIndex]; // 指定的中心位置
+        Vector3 centerPosition = originalArray[currentIndex];
 
         for (int i = 0; i < originalArray.Length; i++)
         {
             recalculatedArray[i] = originalArray[i] - centerPosition + new Vector3(0f, 0f, 3f);
         }
 
-        foreach (var item in recalculatedArray)
-        {
-            print(item);
-        }
-
         return recalculatedArray;
     }
 
-    private void PlayKada()
+    private void ShiningDistance()
     {
-        kadaSound.transform.position = locker[kadaIndex];
-        kadaSound.Play();
+        animator.SetTrigger("Tik");
+        light.intensity = 1f - (float)Mathf.Abs(currentIndex - kadaIndex) / (float)locker.Length;
+        light.range = 4f - (float)Mathf.Abs(currentIndex - kadaIndex) / (float)locker.Length;
     }
-
 }
