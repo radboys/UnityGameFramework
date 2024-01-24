@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class LockerController : MonoBehaviour
 {
     [SerializeField] private AudioSource kadaSound; // Serialized for editor access, private to restrict external access
+    [SerializeField] private AudioSource unlock; // Serialized for editor access, private to restrict external access
+    [SerializeField] private AudioSource failUnlock; // Serialized for editor access, private to restrict external access
 
     private Vector3[] locker;
 
@@ -20,6 +23,8 @@ public class LockerController : MonoBehaviour
     public Animator animator;
 
     public Light light;
+
+    public Animator UnlockAnimation;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +44,19 @@ public class LockerController : MonoBehaviour
         {
             MoveArrayRight();
             ShiningDistance();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            if(currentIndex == kadaIndex)
+            {
+                unlock.Play();
+                UnlockAnimation.SetTrigger("Unlock");
+            }
+            else
+            {
+                failUnlock.Play();
+            }
         }
     }
 
@@ -121,7 +139,7 @@ public class LockerController : MonoBehaviour
     private void ShiningDistance()
     {
         animator.SetTrigger("Tik");
-        light.intensity = 1f - (float)Mathf.Abs(currentIndex - kadaIndex) / (float)locker.Length;
-        light.range = 4f - (float)Mathf.Abs(currentIndex - kadaIndex) / (float)locker.Length;
+        light.intensity = 2f - 2*(float)Mathf.Abs(currentIndex - kadaIndex) / (float)locker.Length;
+        light.range = 4f - 3 *(float)Mathf.Abs(currentIndex - kadaIndex) / (float)locker.Length;
     }
 }
