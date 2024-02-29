@@ -9,7 +9,7 @@ using UnityEngine;
 public class BaseManager<T> where T: BaseManager<T> , new()
 {
     private static T instance;
-
+    //Branch test
     public static T Instance
     {
         get

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "com.unity.2d.common": {
       "version": "8.0.2",
       "depth": 1,
@@ -39,6 +40,17 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+=======
+    "com.unity.burst": {
+      "version": "1.8.12",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+>>>>>>> 2cb304d8ee778841e2cc3eaf709eb803fb32b20a
     },
     "com.unity.collab-proxy": {
       "version": "2.2.0",
