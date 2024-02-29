@@ -67,4 +67,5 @@ public class PoolManager : BaseManager<PoolManager>
         poolsDictionary.Clear();
         poolObject = null;
     }
+
 }

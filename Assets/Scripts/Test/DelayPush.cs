@@ -13,5 +13,8 @@ public class DelayPush : MonoBehaviour
     void Push()
     {
         PoolManager.Instance.PushObject(name, gameObject);
+
     }
+
+
 }
