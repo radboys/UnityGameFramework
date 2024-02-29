@@ -21,4 +21,6 @@ public class BaseManager<T> where T: BaseManager<T> , new()
             return instance;
         }
     }
+
+    protected BaseManager() { }
 }
